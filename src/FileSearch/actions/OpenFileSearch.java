@@ -10,6 +10,7 @@ public class OpenFileSearch extends AnAction {
     SearchDialog dialog = new SearchDialog(new SearchManager());
     public void actionPerformed(AnActionEvent e) {
         FSLog.log.info("Action performed.");
+        dialog.setProject(e.getProject());
         dialog.pack();
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);

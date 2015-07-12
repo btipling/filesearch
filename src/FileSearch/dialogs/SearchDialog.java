@@ -1,13 +1,21 @@
 package FileSearch.dialogs;
 
+import FileSearch.FSLog;
 import FileSearch.Search;
 import FileSearch.SearchManager;
 import FileSearch.SearchOptions;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.io.File;
 
 public class SearchDialog extends JDialog {
+    private Project project;
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
@@ -34,13 +42,10 @@ public class SearchDialog extends JDialog {
         getRootPane().setDefaultButton(buttonOK);
         this.searchManager = searchManager;
 
-        buttonOK.addActionListener(new ActionListener() {
-            final SearchManager sm = searchManager;
-            public void actionPerformed(ActionEvent e) {
-                Search search = new Search(createSearchOptions());
-                sm.execute(search);
-                onOK();
-            }
+        buttonOK.addActionListener(e -> {
+            Search search = new Search(createSearchOptions());
+            searchManager.execute(search);
+            onOK();
         });
 
         buttonCancel.addActionListener(e -> onCancel());
@@ -50,6 +55,16 @@ public class SearchDialog extends JDialog {
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }
+        });
+
+        selectSearchPathButton.addActionListener(e -> {
+            FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, true);
+            descriptor.setTitle("Select Directories to Search");
+            descriptor.setDescription("You can pick multiple directories to search.");
+            String projectPath = project.getBasePath();
+            VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(projectPath));
+            VirtualFile[] vFiles = FileChooser.chooseFiles(descriptor, null, virtualFile);
+            FSLog.log.info(String.format("Got stuff: %s", vFiles));
         });
 
         contentPane.registerKeyboardAction(e -> onCancel(),
@@ -76,4 +91,7 @@ public class SearchDialog extends JDialog {
         dispose();
     }
 
+    public void setProject(Project project) {
+        this.project = project;
+    }
 }
