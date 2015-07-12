@@ -17,7 +17,7 @@ public class SearchDialog extends JDialog {
     private JPanel searchOptionsPanel;
     private JTextField textField1;
     private JCheckBox caseCB;
-    private JCheckBox regexCPB;
+    private JCheckBox regexCB;
     private JRadioButton fileNameRadioButton;
     private JRadioButton fullPathRadioButton;
     private JButton selectSearchPathButton;
@@ -26,6 +26,7 @@ public class SearchDialog extends JDialog {
     private JScrollPane resultsPane;
     private JList resultsList;
     private SearchManager searchManager;
+    private String searchPath;
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
@@ -57,6 +58,13 @@ public class SearchDialog extends JDialog {
 
     protected SearchOptions createSearchOptions(){
         SearchOptions so = new SearchOptions();
+        so.searchPath = searchPath;
+        so.searchString = textField1.getText();
+        so.caseSensitive = caseCB.isSelected();
+        so.regex = regexCB.isSelected();
+        so.wholePath = fullPathRadioButton.isSelected();
+        so.recursive = recursiveCB.isSelected();
+
         return so;
     }
 
