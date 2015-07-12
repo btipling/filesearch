@@ -7,6 +7,20 @@ public class SearchDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
+    private JPanel resultsPanel;
+    private JPanel searchFormPanel;
+    private JPanel textInputPanel;
+    private JPanel searchOptionsPanel;
+    private JTextField textField1;
+    private JCheckBox caseCB;
+    private JCheckBox regexCPB;
+    private JRadioButton fileNameRadioButton;
+    private JRadioButton fullPathRadioButton;
+    private JButton selectPathButton;
+    private JLabel pathLabel;
+    private JCheckBox recursiveCB;
+    private JScrollPane resultsPane;
+    private JList resultsList;
 
     public SearchDialog() {
         setContentPane(contentPane);
