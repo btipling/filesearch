@@ -13,6 +13,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
 
 public class SearchDialog extends JDialog {
     private Project project;
@@ -26,15 +27,15 @@ public class SearchDialog extends JDialog {
     private JTextField textField1;
     private JCheckBox caseCB;
     private JCheckBox regexCB;
-    private JRadioButton fileNameRadioButton;
+    private JRadioButton fileNameOnlyRadioButton;
     private JRadioButton fullPathRadioButton;
-    private JButton selectSearchPathButton;
-    private JLabel pathLabel;
+    private JButton selectDirectoriesToSearchButton;
     private JCheckBox recursiveCB;
     private JScrollPane resultsPane;
     private JList resultsList;
+    private JList list1;
     private SearchManager searchManager;
-    private String searchPath;
+    private ArrayList<String> searchPaths = new ArrayList<String>();
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
@@ -57,7 +58,7 @@ public class SearchDialog extends JDialog {
             }
         });
 
-        selectSearchPathButton.addActionListener(e -> {
+        selectDirectoriesToSearchButton.addActionListener(e -> {
             FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, true);
             descriptor.setTitle("Select Directories to Search");
             descriptor.setDescription("You can pick multiple directories to search.");
@@ -73,7 +74,8 @@ public class SearchDialog extends JDialog {
 
     protected SearchOptions createSearchOptions(){
         SearchOptions so = new SearchOptions();
-        so.searchPath = searchPath;
+        String[] searchPathsArray = new String[searchPaths.size()];
+        so.searchPaths = searchPaths.toArray(searchPathsArray);
         so.searchString = textField1.getText();
         so.caseSensitive = caseCB.isSelected();
         so.regex = regexCB.isSelected();

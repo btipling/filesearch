@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class SearchOptions implements Serializable {
     public String searchString;
-    public String searchPath;
+    public String[] searchPaths;
     public Boolean regex;
     public Boolean caseSensitive;
     public Boolean wholePath;
