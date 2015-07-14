@@ -9,6 +9,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.jgoodies.common.collect.ArrayListModel;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -33,14 +34,15 @@ public class SearchDialog extends JDialog {
     private JCheckBox recursiveCB;
     private JScrollPane resultsPane;
     private JList resultsList;
-    private JList list1;
+    private JList searchPathList;
     private SearchManager searchManager;
-    private ArrayList<String> searchPaths = new ArrayList<String>();
+    private ArrayListModel<String> searchPathModel = new ArrayListModel<String>();
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
+        searchPathList.setModel(searchPathModel);
         this.searchManager = searchManager;
 
         buttonOK.addActionListener(e -> {
@@ -58,6 +60,16 @@ public class SearchDialog extends JDialog {
             }
         });
 
+        searchPathList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (e.getClickCount() == 2) {
+                    searchPathModel.remove(searchPathList.locationToIndex(e.getPoint()));
+                }
+            }
+        });
+
         selectDirectoriesToSearchButton.addActionListener(e -> {
             FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, true);
             descriptor.setTitle("Select Directories to Search");
@@ -66,6 +78,9 @@ public class SearchDialog extends JDialog {
             VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(projectPath));
             VirtualFile[] vFiles = FileChooser.chooseFiles(descriptor, null, virtualFile);
             FSLog.log.info(String.format("Got stuff: %s", vFiles));
+            for (VirtualFile file : vFiles) {
+                searchPathModel.add(file.getPath());
+            }
         });
 
         contentPane.registerKeyboardAction(e -> onCancel(),
@@ -74,8 +89,8 @@ public class SearchDialog extends JDialog {
 
     protected SearchOptions createSearchOptions(){
         SearchOptions so = new SearchOptions();
-        String[] searchPathsArray = new String[searchPaths.size()];
-        so.searchPaths = searchPaths.toArray(searchPathsArray);
+        String[] searchPathsArray = new String[searchPathModel.size()];
+        so.searchPaths = searchPathModel.toArray(searchPathsArray);
         so.searchString = textField1.getText();
         so.caseSensitive = caseCB.isSelected();
         so.regex = regexCB.isSelected();
@@ -95,5 +110,8 @@ public class SearchDialog extends JDialog {
 
     public void setProject(Project project) {
         this.project = project;
+        if (searchPathModel.isEmpty()) {
+            searchPathModel.add(project.getBasePath());
+        }
     }
 }
