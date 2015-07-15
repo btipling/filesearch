@@ -9,12 +9,10 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.jgoodies.common.collect.ArrayListModel;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
 
 public class SearchDialog extends JDialog {
     private Project project;
@@ -33,21 +31,21 @@ public class SearchDialog extends JDialog {
     private JButton selectDirectoriesToSearchButton;
     private JCheckBox recursiveCB;
     private JScrollPane resultsPane;
-    private JList resultsList;
-    private JList searchPathList;
+    private JList<String> resultsList;
+    private JList<String> searchPathList;
     private SearchManager searchManager;
-    private ArrayListModel<String> searchPathModel = new ArrayListModel<String>();
+    private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
+    private DefaultListModel<String> resultsListModel = new DefaultListModel<>();
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
         searchPathList.setModel(searchPathModel);
+        resultsList.setModel(resultsListModel);
         this.searchManager = searchManager;
 
         buttonOK.addActionListener(e -> {
-            Search search = new Search(createSearchOptions());
-            searchManager.execute(search);
             onOK();
         });
 
@@ -79,7 +77,7 @@ public class SearchDialog extends JDialog {
             VirtualFile[] vFiles = FileChooser.chooseFiles(descriptor, null, virtualFile);
             FSLog.log.info(String.format("Got stuff: %s", vFiles));
             for (VirtualFile file : vFiles) {
-                searchPathModel.add(file.getPath());
+                searchPathModel.addElement(file.getPath());
             }
         });
 
@@ -89,19 +87,19 @@ public class SearchDialog extends JDialog {
 
     protected SearchOptions createSearchOptions(){
         SearchOptions so = new SearchOptions();
-        String[] searchPathsArray = new String[searchPathModel.size()];
-        so.searchPaths = searchPathModel.toArray(searchPathsArray);
+        so.searchPaths = (String[]) searchPathModel.toArray();
         so.searchString = textField1.getText();
         so.caseSensitive = caseCB.isSelected();
         so.regex = regexCB.isSelected();
         so.wholePath = fullPathRadioButton.isSelected();
         so.recursive = recursiveCB.isSelected();
-
         return so;
     }
 
     private void onOK() {
-        dispose();
+        Search search = new Search(createSearchOptions());
+//        searchManager.execute(search);
+//        resultsListModel.
     }
 
     private void onCancel() {
@@ -111,7 +109,7 @@ public class SearchDialog extends JDialog {
     public void setProject(Project project) {
         this.project = project;
         if (searchPathModel.isEmpty()) {
-            searchPathModel.add(project.getBasePath());
+            searchPathModel.addElement(project.getBasePath());
         }
     }
 }
