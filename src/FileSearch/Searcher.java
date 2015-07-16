@@ -20,7 +20,7 @@ public class Searcher implements FileVisitor<Path> {
 
     protected void check(Path dirOrFile) {
         if (dirOrFile.getFileName().toString().contains(search.searchOptions.searchString)) {
-            search.results.add(new Result(dirOrFile));
+            search.addResult(new Result(dirOrFile));
         }
     }
 

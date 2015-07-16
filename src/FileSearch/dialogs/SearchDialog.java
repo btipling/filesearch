@@ -1,9 +1,6 @@
 package FileSearch.dialogs;
 
-import FileSearch.FSLog;
-import FileSearch.Search;
-import FileSearch.SearchManager;
-import FileSearch.SearchOptions;
+import FileSearch.*;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
@@ -35,7 +32,7 @@ public class SearchDialog extends JDialog {
     private JList<String> searchPathList;
     private SearchManager searchManager;
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
-    private DefaultListModel<String> resultsListModel = new DefaultListModel<>();
+    private ResultsListModel resultsListModel = new ResultsListModel();
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
@@ -87,7 +84,12 @@ public class SearchDialog extends JDialog {
 
     protected SearchOptions createSearchOptions(){
         SearchOptions so = new SearchOptions();
-        so.searchPaths = (String[]) searchPathModel.toArray();
+        String[] sp = new String[searchPathModel.size()];
+        Object[] r = searchPathModel.toArray();
+        for (int i = 0; i < r.length; i++) {
+            sp[i] = (String)r[i];
+        }
+        so.searchPaths = sp;
         so.searchString = textField1.getText();
         so.caseSensitive = caseCB.isSelected();
         so.regex = regexCB.isSelected();
@@ -98,8 +100,8 @@ public class SearchDialog extends JDialog {
 
     private void onOK() {
         Search search = new Search(createSearchOptions());
-//        searchManager.execute(search);
-//        resultsListModel.
+        searchManager.execute(search);
+        resultsListModel.update(search.getResults());
     }
 
     private void onCancel() {

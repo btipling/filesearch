@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Search {
     protected SearchOptions searchOptions;
-    protected ArrayList<Result> results = new ArrayList<Result>();
+    private ArrayList<Result> results = new ArrayList<Result>();
 
     public Search(SearchOptions searchOptions) {
         this.searchOptions = searchOptions;
@@ -14,5 +14,7 @@ public class Search {
         results.add(result);
     }
 
-
+    public ArrayList<Result> getResults() {
+        return results;
+    }
 }

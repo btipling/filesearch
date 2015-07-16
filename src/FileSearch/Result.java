@@ -8,4 +8,8 @@ public class Result {
     public Result(Path path) {
         this.path = path;
     }
+
+    public String toString() {
+        return this.path.toString();
+    }
 }
