@@ -13,8 +13,10 @@ import java.util.regex.Pattern;
 
 public class Searcher implements FileVisitor<Path> {
 
-    Search search;
+    private Search search;
     private SearchStrategy searchStrategy;
+    private boolean top = true;
+
 
     private interface SearchStrategy {
         void setSearcher(String searchString, boolean caseSensitive);
@@ -77,13 +79,16 @@ public class Searcher implements FileVisitor<Path> {
         }
         Path filenamePath = dirOrFile.getFileName();
         if (filenamePath == null) {
+            //Happens when we are searching the root directory, "/"!
             return null;
         }
         String filename = filenamePath.toString();
         String path = dirOrFile.toString();
+        String searchString = search.searchOptions.searchString;
         if (!search.searchOptions.caseSensitive) {
             filename = filename.toLowerCase();
             path = path.toLowerCase();
+            searchString = searchString.toLowerCase();
         }
         if (ispreVisitDir && !search.searchOptions.searchHiddenDirs) {
             File f = new File(path);
@@ -98,7 +103,7 @@ public class Searcher implements FileVisitor<Path> {
                 }
                 break;
             case EXACT_FILE:
-                if (filename.equals(search.searchOptions.searchString)) {
+                if (filename.equals(searchString)) {
                     search.addResult(new Result(dirOrFile));
                 }
                 break;
@@ -117,11 +122,13 @@ public class Searcher implements FileVisitor<Path> {
         if (r != null) {
             return r;
         }
-        if (!search.searchOptions.recursive) {
+        if (!top && !search.searchOptions.recursive) {
             return FileVisitResult.SKIP_SUBTREE;
         }
+        // Otherwise we would never search anything, we need to search the first directory.
+        top = false;
         search.currentStatus(String.format("Searching %s", dir.toString()));
-        return FileVisitResult.SKIP_SUBTREE;
+        return FileVisitResult.CONTINUE;
     }
 
     @Override

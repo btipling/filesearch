@@ -32,6 +32,7 @@ public class SearchDialog extends JDialog {
     private JButton clearBtn;
     private JCheckBox hiddenDirsCB;
     private JRadioButton exactFileNameRadioButton;
+    private JRadioButton fileNameRadioButton;
     private SearchManager searchManager;
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
     private ResultsListModel resultsListModel = new ResultsListModel();
@@ -89,6 +90,12 @@ public class SearchDialog extends JDialog {
                 enableSearchButton();
             }
         });
+        ActionListener actionListener = e -> {
+            regexCB.setEnabled(!exactFileNameRadioButton.isSelected());
+        };
+        exactFileNameRadioButton.addActionListener(actionListener);
+        fileNameRadioButton.addActionListener(actionListener);
+        fullPathRadioButton.addActionListener(actionListener);
 
         selectDirectoriesToSearchButton.addActionListener(e -> {
             FileChooserDescriptor descriptor = new FileChooserDescriptor(false, true, false, false, false, true);
