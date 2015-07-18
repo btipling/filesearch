@@ -19,7 +19,7 @@ public class SearchDialog extends JDialog {
     private JPanel contentPane;
     private JButton searchButton;
     private JButton cancelButton;
-    private JTextField textField1;
+    private JTextField searchInput;
     private JCheckBox caseCB;
     private JCheckBox regexCB;
     private JRadioButton fullPathRadioButton;
@@ -43,25 +43,20 @@ public class SearchDialog extends JDialog {
         resultsList.setModel(resultsListModel);
         this.searchManager = searchManager;
 
-        searchButton.addActionListener(e -> {
-            onSearch();
-        });
-
+        searchButton.addActionListener(e -> onSearch());
         cancelButton.addActionListener(e -> onCancel());
+        stopButton.addActionListener(e -> stopSearching());
+        clearBtn.addActionListener(e -> {
+            if (currentSearch != null) {
+                currentSearch.clear();
+                statusLabel.setText("");
+            }
+        });
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onCancel();
-            }
-        });
-
-        stopButton.addActionListener(e -> stopSearching());
-
-        clearBtn.addActionListener(e -> {
-            if (currentSearch != null) {
-                currentSearch.clear();
-                statusLabel.setText("");
             }
         });
 
@@ -72,6 +67,24 @@ public class SearchDialog extends JDialog {
                 if (e.getClickCount() == 2) {
                     searchPathModel.remove(searchPathList.locationToIndex(e.getPoint()));
                 }
+                enableSearchButton();
+            }
+        });
+
+        searchInput.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                enableSearchButton();
             }
         });
 
@@ -86,13 +99,14 @@ public class SearchDialog extends JDialog {
             for (VirtualFile file : vFiles) {
                 searchPathModel.addElement(file.getPath());
             }
+            enableSearchButton();
         });
 
         contentPane.registerKeyboardAction(e -> onCancel(),
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    protected SearchOptions createSearchOptions(){
+    protected SearchOptions createSearchOptions(String searchString){
         SearchOptions so = new SearchOptions();
         String[] sp = new String[searchPathModel.size()];
         Object[] r = searchPathModel.toArray();
@@ -100,7 +114,7 @@ public class SearchDialog extends JDialog {
             sp[i] = (String)r[i];
         }
         so.searchPaths = sp;
-        so.searchString = textField1.getText();
+        so.searchString = searchString;
         so.caseSensitive = caseCB.isSelected();
         so.regex = regexCB.isSelected();
         so.wholePath = fullPathRadioButton.isSelected();
@@ -109,7 +123,11 @@ public class SearchDialog extends JDialog {
     }
 
     private void onSearch() {
-        Search search = new Search(createSearchOptions());
+        String searchString = searchInput.getText();
+        if (searchString.isEmpty() || searchPathModel.isEmpty()) {
+            return;
+        }
+        Search search = new Search(createSearchOptions(searchString));
         currentSearch = search;
         resultsListModel.update(search.getResults());
         statusLabel.setText("");
@@ -160,6 +178,10 @@ public class SearchDialog extends JDialog {
         stopButton.setEnabled(true);
         searchButton.setEnabled(false);
         searchManager.execute(search);
+    }
+
+    private void enableSearchButton() {
+        searchButton.setEnabled(searchInput.getText().length() > 0 && !searchPathModel.isEmpty());
     }
 
     private void setSearchStatus(String status) {

@@ -29,6 +29,7 @@
                   <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <enabled value="false"/>
                   <text value="Search"/>
                 </properties>
               </component>
@@ -94,7 +95,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="5e2bc" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+                  <component id="5e2bc" class="javax.swing.JTextField" binding="searchInput">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                         <preferred-size width="150" height="-1"/>
