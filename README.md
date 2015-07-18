@@ -11,11 +11,11 @@ option for not checking hidden directories
 implement all the options
 tests
 
-Determine performance?
-    ✓ stop locking ui
-    ✓ cancel search
-    ✓ fix results list model so it only adds on add, instead of feeding it the entire result list
 
+✓ update plugin.xml
+✓ stop locking ui
+✓ cancel search
+✓ fix results list model so it only adds on add, instead of feeding it the entire result list
 ✓ clear results/state
 ✓ add clear (results) button
 ✓ disable search button until there's text and a directory to search exists
