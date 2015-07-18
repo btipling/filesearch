@@ -207,6 +207,9 @@ public class SearchDialog extends JDialog {
 
     private void setFinalStatus(String status) {
         ApplicationManager.getApplication().invokeLater(() -> {
+            if (currentSearch == null || currentSearch.getResults() == null) {
+                statusLabel.setText("");
+            }
             int numResults = currentSearch.getResults().size();
             if (numResults == 1) {
                 statusLabel.setText(String.format("%s. Found 1 result.", status));
