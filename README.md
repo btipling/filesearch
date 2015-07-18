@@ -1,6 +1,5 @@
 ## TODO:
 
-Respect options.
 Open up files
 -> context menu
     Open up parent folder.
@@ -9,10 +8,17 @@ Open up files
     Copy and paste relative path to project?
 option for not checking hidden directories
 implement all the options
+
+implement search history, perhaps via an HTML link that collapses or expands a previous search results table that
+has search string, and columns for search options and an option to clear or remove individual items
+
+implement max num search result history
+
 tests
 
 ## TO-DONE:
 
+✓ Respect options.
 ✓ update plugin.xml
 ✓ stop locking ui
 ✓ cancel search
