@@ -9,6 +9,7 @@ Copy and paste parent folder path.
 Copy and paste relative path to project?
 option for not checking hidden directories
 implement all the options
+tests
 
 Determine performance?
     ✓ stop locking ui
