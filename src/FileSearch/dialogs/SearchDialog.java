@@ -11,29 +11,25 @@ import com.intellij.openapi.vfs.VirtualFile;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchDialog extends JDialog {
     private Project project;
     private JPanel contentPane;
-    private JButton buttonOK;
-    private JButton buttonCancel;
-    private JPanel resultsPanel;
-    private JPanel searchFormPanel;
-    private JPanel textInputPanel;
-    private JPanel searchOptionsPanel;
+    private JButton searchButton;
+    private JButton cancelButton;
     private JTextField textField1;
     private JCheckBox caseCB;
     private JCheckBox regexCB;
-    private JRadioButton fileNameOnlyRadioButton;
     private JRadioButton fullPathRadioButton;
     private JButton selectDirectoriesToSearchButton;
     private JCheckBox recursiveCB;
-    private JScrollPane resultsPane;
     private JList<String> resultsList;
     private JList<String> searchPathList;
     private JLabel statusLabel;
     private JButton stopButton;
+    private JButton clearBtn;
     private SearchManager searchManager;
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
     private ResultsListModel resultsListModel = new ResultsListModel();
@@ -42,16 +38,16 @@ public class SearchDialog extends JDialog {
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(buttonOK);
+        getRootPane().setDefaultButton(searchButton);
         searchPathList.setModel(searchPathModel);
         resultsList.setModel(resultsListModel);
         this.searchManager = searchManager;
 
-        buttonOK.addActionListener(e -> {
-            onOK();
+        searchButton.addActionListener(e -> {
+            onSearch();
         });
 
-        buttonCancel.addActionListener(e -> onCancel());
+        cancelButton.addActionListener(e -> onCancel());
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -61,6 +57,13 @@ public class SearchDialog extends JDialog {
         });
 
         stopButton.addActionListener(e -> stopSearching());
+
+        clearBtn.addActionListener(e -> {
+            if (currentSearch != null) {
+                currentSearch.clear();
+                statusLabel.setText("");
+            }
+        });
 
         searchPathList.addMouseListener(new MouseAdapter() {
             @Override
@@ -105,21 +108,27 @@ public class SearchDialog extends JDialog {
         return so;
     }
 
-    private void onOK() {
+    private void onSearch() {
         Search search = new Search(createSearchOptions());
         currentSearch = search;
         resultsListModel.update(search.getResults());
+        statusLabel.setText("");
+        clearBtn.setEnabled(false);
         AtomicInteger i = new AtomicInteger(0);
         search.addListener(new SearchResultListener() {
             @Override
             public void onFinishedResults(Search search) {
-                ApplicationManager.getApplication().invokeLater(() -> statusLabel.setText("Finished."));
+                setFinalStatus("Finished");
+                resetUI();
             }
 
             @Override
             public void onReceivedResult(Search search, Result result) {
+                setSearchStatus(String.format("Found %s.", result.toString()));
                 ApplicationManager.getApplication().invokeLater(() -> {
-                    statusLabel.setText(String.format("Found %s.", result.toString()));
+                    if (!clearBtn.isEnabled()) {
+                        clearBtn.setEnabled(true);
+                    }
                     resultsListModel.addedResults(1);
                     int lastIndex = resultsList.getModel().getSize() - 1;
                     if (lastIndex >= 0) {
@@ -130,30 +139,58 @@ public class SearchDialog extends JDialog {
 
             @Override
             public void onStatusUpdate(String status) {
+                int updateFreq = 5000;
+                int cur = i.addAndGet(1);
+                if (cur == 1 || cur % updateFreq == 0) {
+                    setSearchStatus(status);
+                }
+            }
+
+            @Override
+            public void onResultsUpdate(Search search) {
                 ApplicationManager.getApplication().invokeLater(() -> {
-                    int cur = i.addAndGet(1);
-                    if (cur == 1 || cur % 10000 == 0) {
-                        FSLog.log.info(String.format("Setting text at %d", cur));
-                        statusLabel.setText(status);
+                    List<Result> r = search.getResults();
+                    resultsListModel.update(search.getResults());
+                    if (r.size() == 0 && clearBtn.isEnabled()) {
+                        clearBtn.setEnabled(false);
                     }
                 });
             }
         });
         stopButton.setEnabled(true);
-        buttonOK.setEnabled(false);
+        searchButton.setEnabled(false);
         searchManager.execute(search);
     }
 
+    private void setSearchStatus(String status) {
+        int n = currentSearch.getResults().size();
+        String s = n == 1 ? "" : "s";
+        ApplicationManager.getApplication().invokeLater(() -> statusLabel.setText(String.format("%d result%s. %s", n, s, status)));
+    }
+
+    private void setFinalStatus(String status) {
+        ApplicationManager.getApplication().invokeLater(() -> {
+            int numResults = currentSearch.getResults().size();
+            if (numResults == 1) {
+                statusLabel.setText(String.format("%s. Found 1 result.", status));
+            } else {
+                statusLabel.setText(String.format("%s. Found %d results.", status, numResults));
+            }
+        });
+    }
+
     private void resetUI() {
-        stopButton.setEnabled(false);
-        buttonOK.setEnabled(true);
+        ApplicationManager.getApplication().invokeLater(() -> {
+            stopButton.setEnabled(false);
+            searchButton.setEnabled(true);
+        });
     }
 
     private void stopSearching() {
         if (currentSearch != null) {
             searchManager.cancel(currentSearch);
         }
-        statusLabel.setText("Stopped search.");
+        setFinalStatus("Stopped search");
         resetUI();
     }
 

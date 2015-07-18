@@ -56,5 +56,8 @@ public class Search {
 
     public void clear() {
         results.clear();
+        for (SearchResultListener l : listeners) {
+            l.onResultsUpdate(this);
+        }
     }
 }

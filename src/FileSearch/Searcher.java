@@ -22,7 +22,12 @@ public class Searcher implements FileVisitor<Path> {
         if (Thread.currentThread().isInterrupted()) {
             return FileVisitResult.TERMINATE;
         }
-        if (dirOrFile.getFileName().toString().contains(search.searchOptions.searchString)) {
+        Path filenamePath = dirOrFile.getFileName();
+        if (filenamePath == null) {
+            return null;
+        }
+        String filename = filenamePath.toString();
+        if (filename.contains(search.searchOptions.searchString)) {
             search.addResult(new Result(dirOrFile));
         }
         return null;
