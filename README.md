@@ -3,14 +3,15 @@
 Respect options.
 Open up files
 -> context menu
-Open up parent folder.
-Copy and paste whole path.
-Copy and paste parent folder path.
-Copy and paste relative path to project?
+    Open up parent folder.
+    Copy and paste whole path.
+    Copy and paste parent folder path.
+    Copy and paste relative path to project?
 option for not checking hidden directories
 implement all the options
 tests
 
+## TO-DONE:
 
 ✓ update plugin.xml
 ✓ stop locking ui

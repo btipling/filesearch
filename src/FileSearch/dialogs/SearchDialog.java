@@ -30,6 +30,8 @@ public class SearchDialog extends JDialog {
     private JLabel statusLabel;
     private JButton stopButton;
     private JButton clearBtn;
+    private JCheckBox hiddenDirsCB;
+    private JRadioButton exactFileNameRadioButton;
     private SearchManager searchManager;
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
     private ResultsListModel resultsListModel = new ResultsListModel();
@@ -117,8 +119,14 @@ public class SearchDialog extends JDialog {
         so.searchString = searchString;
         so.caseSensitive = caseCB.isSelected();
         so.regex = regexCB.isSelected();
-        so.wholePath = fullPathRadioButton.isSelected();
+        so.match = SearchOptions.MatchOption.MATCH_FILE;
+        if (fullPathRadioButton.isSelected()) {
+            so.match = SearchOptions.MatchOption.MATCH_PATH;
+        } else if (exactFileNameRadioButton.isSelected()) {
+            so.match = SearchOptions.MatchOption.EXACT_FILE;
+        }
         so.recursive = recursiveCB.isSelected();
+        so.searchHiddenDirs = hiddenDirsCB.isSelected();
         return so;
     }
 
