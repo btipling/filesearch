@@ -215,6 +215,7 @@ public class SearchDialog extends JDialog {
         ApplicationManager.getApplication().invokeLater(() -> {
             if (currentSearch == null || currentSearch.getResults() == null) {
                 statusLabel.setText("");
+                return;
             }
             int numResults = currentSearch.getResults().size();
             if (numResults == 1) {
