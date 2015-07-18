@@ -9,3 +9,8 @@ Copy and paste parent folder path.
 Copy and paste relative path to project?
 
 Determine performance?
+    stop locking ui
+    cancel search
+
+clear results/state
+option for not checking hidden directories

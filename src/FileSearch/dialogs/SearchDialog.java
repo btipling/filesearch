@@ -72,7 +72,7 @@ public class SearchDialog extends JDialog {
             String projectPath = project.getBasePath();
             VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(projectPath));
             VirtualFile[] vFiles = FileChooser.chooseFiles(descriptor, null, virtualFile);
-            FSLog.log.info(String.format("Got stuff: %s", vFiles));
+            FSLog.log.info(String.format("Got stuff: %s", vFiles.toString()));
             for (VirtualFile file : vFiles) {
                 searchPathModel.addElement(file.getPath());
             }
@@ -100,8 +100,18 @@ public class SearchDialog extends JDialog {
 
     private void onOK() {
         Search search = new Search(createSearchOptions());
+        search.addListener(new SearchResultListener() {
+            @Override
+            public void onFinishedResults(Search search) {
+
+            }
+
+            @Override
+            public void onReceivedResult(Search search) {
+                resultsListModel.update(search.getResults());
+            }
+        });
         searchManager.execute(search);
-        resultsListModel.update(search.getResults());
     }
 
     private void onCancel() {
