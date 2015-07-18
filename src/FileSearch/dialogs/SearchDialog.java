@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SearchDialog extends JDialog {
     private Project project;
@@ -31,9 +32,12 @@ public class SearchDialog extends JDialog {
     private JScrollPane resultsPane;
     private JList<String> resultsList;
     private JList<String> searchPathList;
+    private JLabel statusLabel;
+    private JButton stopButton;
     private SearchManager searchManager;
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
     private ResultsListModel resultsListModel = new ResultsListModel();
+    private Search currentSearch = null;
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
@@ -55,6 +59,8 @@ public class SearchDialog extends JDialog {
                 onCancel();
             }
         });
+
+        stopButton.addActionListener(e -> stopSearching());
 
         searchPathList.addMouseListener(new MouseAdapter() {
             @Override
@@ -101,21 +107,58 @@ public class SearchDialog extends JDialog {
 
     private void onOK() {
         Search search = new Search(createSearchOptions());
+        currentSearch = search;
+        resultsListModel.update(search.getResults());
+        AtomicInteger i = new AtomicInteger(0);
         search.addListener(new SearchResultListener() {
             @Override
             public void onFinishedResults(Search search) {
-
+                ApplicationManager.getApplication().invokeLater(() -> statusLabel.setText("Finished."));
             }
 
             @Override
-            public void onReceivedResult(Search search) {
-                ApplicationManager.getApplication().invokeLater(() -> resultsListModel.update(search.getResults()));
+            public void onReceivedResult(Search search, Result result) {
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    statusLabel.setText(String.format("Found %s.", result.toString()));
+                    resultsListModel.addedResults(1);
+                    int lastIndex = resultsList.getModel().getSize() - 1;
+                    if (lastIndex >= 0) {
+                        resultsList.ensureIndexIsVisible(lastIndex);
+                    }
+                });
+            }
+
+            @Override
+            public void onStatusUpdate(String status) {
+                ApplicationManager.getApplication().invokeLater(() -> {
+                    int cur = i.addAndGet(1);
+                    if (cur == 1 || cur % 10000 == 0) {
+                        FSLog.log.info(String.format("Setting text at %d", cur));
+                        statusLabel.setText(status);
+                    }
+                });
             }
         });
+        stopButton.setEnabled(true);
+        buttonOK.setEnabled(false);
         searchManager.execute(search);
     }
 
+    private void resetUI() {
+        stopButton.setEnabled(false);
+        buttonOK.setEnabled(true);
+    }
+
+    private void stopSearching() {
+        if (currentSearch != null) {
+            searchManager.cancel(currentSearch);
+        }
+        statusLabel.setText("Stopped search.");
+        resetUI();
+    }
+
     private void onCancel() {
+        stopSearching();
         dispose();
     }
 

@@ -21,6 +21,7 @@ public class SearchManager {
             for (String searchPath : search.searchOptions.searchPaths) {
                 searchPath(searchPath, search);
             }
+            search.finished();
         }));
     }
 
@@ -29,6 +30,7 @@ public class SearchManager {
         if (f != null) {
             f.cancel(true);
         }
+        search.cancel();
     }
 
     public void searchPath(String searchPath, Search search) {

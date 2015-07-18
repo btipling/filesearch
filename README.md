@@ -15,4 +15,6 @@ Determine performance?
 
 clear results/state
 option for not checking hidden directories
+add clear (results) button
+disable search button until there's text and a directory to search exists
 

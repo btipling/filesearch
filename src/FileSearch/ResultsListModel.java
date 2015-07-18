@@ -11,17 +11,25 @@ public class ResultsListModel implements ListModel<String> {
     List<Result> results = new ArrayList<>();
     List<ListDataListener> listeners = new ArrayList<>();
 
+    private void broadcast(ListDataEvent e) {
+        for (ListDataListener l : listeners) {
+            l.contentsChanged(e);
+        }
+    }
+
     public void update(List<Result> newResults) {
         List<Result> oldResults = this.results;
         int maxSize = oldResults.size();
         if (newResults.size() > maxSize) {
             maxSize = newResults.size();
         }
-        this.results = newResults;
-        ListDataEvent e = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, maxSize);
-        for (ListDataListener l : listeners) {
-            l.contentsChanged(e);
-        }
+        results = newResults;
+        broadcast(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, maxSize));
+    }
+
+    public void addedResults(int n) {
+        int resultSizedIndex = results.size() - n;
+        broadcast(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED, resultSizedIndex - n, resultSizedIndex));
     }
 
     @Override

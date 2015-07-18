@@ -18,31 +18,48 @@ public class Searcher implements FileVisitor<Path> {
         }
     }
 
-    protected void check(Path dirOrFile) {
+    protected FileVisitResult check(Path dirOrFile) {
+        if (Thread.currentThread().isInterrupted()) {
+            return FileVisitResult.TERMINATE;
+        }
         if (dirOrFile.getFileName().toString().contains(search.searchOptions.searchString)) {
             search.addResult(new Result(dirOrFile));
         }
+        return null;
     }
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-        this.check(dir);
+        FileVisitResult r = this.check(dir);
+        if (r != null) {
+            return r;
+        }
+        search.currentStatus(String.format("Searching %s", dir.toString()));
         return isRecursive;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        this.check(file);
+        FileVisitResult r = this.check(file);
+        if (r != null) {
+            return r;
+        }
         return FileVisitResult.CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+        if (Thread.currentThread().isInterrupted()) {
+            return FileVisitResult.TERMINATE;
+        }
         return FileVisitResult.CONTINUE;
     }
 
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+        if (Thread.currentThread().isInterrupted()) {
+            return FileVisitResult.TERMINATE;
+        }
         return FileVisitResult.CONTINUE;
     }
 }

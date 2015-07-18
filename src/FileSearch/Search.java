@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Search {
-    private AtomicBoolean canceled = new AtomicBoolean(false);
+    private AtomicBoolean stopped = new AtomicBoolean(false);
     protected SearchOptions searchOptions;
     private ArrayList<Result> results = new ArrayList<Result>();
     private ArrayList<SearchResultListener> listeners = new ArrayList<>();
@@ -14,12 +14,21 @@ public class Search {
     }
 
     public void addResult(Result result) {
-        if (canceled.get()) {
+        if (stopped.get()) {
             return;
         }
         results.add(result);
         for (SearchResultListener l : listeners) {
-            l.onReceivedResult(this);
+            l.onReceivedResult(this, result);
+        }
+    }
+
+    public void currentStatus(String status) {
+        if (stopped.get()) {
+            return;
+        }
+        for (SearchResultListener l : listeners) {
+            l.onStatusUpdate(status);
         }
     }
 
@@ -28,7 +37,7 @@ public class Search {
     }
 
     public void finished() {
-        if (canceled.get()) {
+        if (stopped.get()) {
             return;
         }
         for (SearchResultListener l : listeners) {
@@ -41,7 +50,7 @@ public class Search {
     }
 
     public void cancel() {
-        canceled.set(true);
+        stopped.set(true);
         listeners.clear();
     }
 
