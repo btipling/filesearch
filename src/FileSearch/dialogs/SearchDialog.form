@@ -33,12 +33,12 @@
                   <text value="Search"/>
                 </properties>
               </component>
-              <component id="5723f" class="javax.swing.JButton" binding="cancelButton">
+              <component id="5723f" class="javax.swing.JButton" binding="closeButton">
                 <constraints>
                   <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Cancel"/>
+                  <text value="Close"/>
                 </properties>
               </component>
               <component id="38f2a" class="javax.swing.JButton" binding="stopButton">

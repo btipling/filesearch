@@ -4,6 +4,7 @@ import FileSearch.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -18,7 +19,7 @@ public class SearchDialog extends JDialog {
     private Project project;
     private JPanel contentPane;
     private JButton searchButton;
-    private JButton cancelButton;
+    private JButton closeButton;
     private JTextField searchInput;
     private JCheckBox caseCB;
     private JCheckBox regexCB;
@@ -47,7 +48,7 @@ public class SearchDialog extends JDialog {
         this.searchManager = searchManager;
 
         searchButton.addActionListener(e -> onSearch());
-        cancelButton.addActionListener(e -> onCancel());
+        closeButton.addActionListener(e -> onCancel());
         stopButton.addActionListener(e -> stopSearching());
         clearBtn.addActionListener(e -> {
             if (currentSearch != null) {
@@ -70,24 +71,29 @@ public class SearchDialog extends JDialog {
                 if (e.getClickCount() == 2) {
                     searchPathModel.remove(searchPathList.locationToIndex(e.getPoint()));
                 }
-                enableSearchButton();
+                toggleSearchButton();
+            }
+        });
+        resultsList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (e.getClickCount() == 2) {
+                    String path = resultsListModel.getElementAt(resultsList.locationToIndex(e.getPoint()));
+                    VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(new File(path));
+                    FileEditorManager.getInstance(project).openFile(virtualFile, true);
+                }
             }
         });
 
         searchInput.addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
-
+            public void keyTyped(KeyEvent e) {}
             @Override
-            public void keyPressed(KeyEvent e) {
-
-            }
-
+            public void keyPressed(KeyEvent e) {}
             @Override
             public void keyReleased(KeyEvent e) {
-                enableSearchButton();
+                toggleSearchButton();
             }
         });
         ActionListener actionListener = e -> {
@@ -108,7 +114,7 @@ public class SearchDialog extends JDialog {
             for (VirtualFile file : vFiles) {
                 searchPathModel.addElement(file.getPath());
             }
-            enableSearchButton();
+            toggleSearchButton();
         });
 
         contentPane.registerKeyboardAction(e -> onCancel(),
@@ -195,7 +201,7 @@ public class SearchDialog extends JDialog {
         searchManager.execute(search);
     }
 
-    private void enableSearchButton() {
+    private void toggleSearchButton() {
         searchButton.setEnabled(searchInput.getText().length() > 0 && !searchPathModel.isEmpty());
     }
 

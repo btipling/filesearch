@@ -1,13 +1,15 @@
 ## TODO:
 
-Open up files
 -> context menu
+    Open up file
     Open up parent folder.
     Copy and paste whole path.
     Copy and paste parent folder path.
     Copy and paste relative path to project?
 option for not checking hidden directories
 implement all the options
+implement tooltips for UI for help
+maybe add a help dialog?
 
 implement search history, perhaps via an HTML link that collapses or expands a previous search results table that
 has search string, and columns for search options and an option to clear or remove individual items
@@ -18,6 +20,8 @@ tests
 
 ## TO-DONE:
 
+
+✓ Open up files
 ✓ Respect options.
 ✓ update plugin.xml
 ✓ stop locking ui

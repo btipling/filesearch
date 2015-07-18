@@ -13,7 +13,7 @@ public class SearchManager {
 
     ArrayList<Search> searchHistory = new ArrayList<>();
     HashMap<Search, Future> tasks = new HashMap<>();
-    ExecutorService executor = Executors.newFixedThreadPool(2);
+    ExecutorService executor = Executors.newFixedThreadPool(1);
 
     public void execute(Search search) {
         searchHistory.add(search);
