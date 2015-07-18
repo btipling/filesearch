@@ -11,6 +11,8 @@ Copy and paste relative path to project?
 Determine performance?
     stop locking ui
     cancel search
+    fix results list model so it only adds on add, instead of feeding it the entire result list
 
 clear results/state
 option for not checking hidden directories
+

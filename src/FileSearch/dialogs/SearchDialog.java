@@ -1,6 +1,7 @@
 package FileSearch.dialogs;
 
 import FileSearch.*;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
@@ -108,7 +109,7 @@ public class SearchDialog extends JDialog {
 
             @Override
             public void onReceivedResult(Search search) {
-                resultsListModel.update(search.getResults());
+                ApplicationManager.getApplication().invokeLater(() -> resultsListModel.update(search.getResults()));
             }
         });
         searchManager.execute(search);
