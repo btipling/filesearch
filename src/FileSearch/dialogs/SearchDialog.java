@@ -49,6 +49,7 @@ public class SearchDialog extends JDialog {
     }
 
     public SearchDialog(final SearchManager searchManager) {
+        setTitle("Search for Files");
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(searchButton);
