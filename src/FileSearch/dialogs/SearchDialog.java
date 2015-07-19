@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.event.*;
 import java.io.File;
 import java.util.List;
@@ -34,6 +35,9 @@ public class SearchDialog extends JDialog {
     private JCheckBox hiddenDirsCB;
     private JRadioButton exactFileNameRadioButton;
     private JRadioButton fileNameRadioButton;
+    private JPanel resultsPanel;
+    private JPanel searchPanel;
+    private JPanel searchPathPanel;
     private SearchManager searchManager;
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
     private ResultsListModel resultsListModel = new ResultsListModel();
@@ -90,7 +94,9 @@ public class SearchDialog extends JDialog {
             }
         });
         popupMenu = new ResultPopupMenu(resultsList);
-
+        resultsPanel.setBorder(new TitledBorder("Search Results"));
+        searchPanel.setBorder(new TitledBorder("Search Options"));
+        searchPathPanel.setBorder(new TitledBorder("Directories to Search"));
         ApplicationInfo instance = ApplicationInfo.getInstance();
         popupMenu.add(createResultsListMenuItem("Open File", FileUtils::openFile));
         String miText = String.format("Open File with %s", instance.getVersionName());
