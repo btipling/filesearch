@@ -11,12 +11,10 @@ import java.util.concurrent.Future;
 
 public class SearchManager {
 
-    ArrayList<Search> searchHistory = new ArrayList<>();
     HashMap<Search, Future> tasks = new HashMap<>();
     ExecutorService executor = Executors.newFixedThreadPool(1);
 
     public void execute(Search search) {
-        searchHistory.add(search);
         tasks.put(search, executor.submit(() -> {
             for (String searchPath : search.searchOptions.searchPaths) {
                 searchPath(searchPath, search);
