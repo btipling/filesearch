@@ -1,13 +1,5 @@
 ## TODO:
 
--> context menu
-    Open up file
-    Open up parent folder.
-    Copy and paste whole path.
-    Copy and paste parent folder path.
-    Copy and paste relative path to project?
-option for not checking hidden directories
-implement all the options
 implement tooltips for UI for help
 maybe add a help dialog?
 
@@ -21,8 +13,15 @@ tests
 ## TO-DONE:
 
 
+✓ -> context menu
+✓     Open up file
+✓     Open up parent folder.
+✓     Copy and paste whole path.
+✓     Copy and paste parent folder path.
+✓ option for not checking hidden directories
 ✓ Open up files
 ✓ Respect options.
+✓ implement all the options
 ✓ update plugin.xml
 ✓ stop locking ui
 ✓ cancel search

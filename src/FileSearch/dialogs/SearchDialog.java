@@ -1,10 +1,10 @@
 package FileSearch.dialogs;
 
 import FileSearch.*;
+import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -39,6 +39,10 @@ public class SearchDialog extends JDialog {
     private ResultsListModel resultsListModel = new ResultsListModel();
     private Search currentSearch = null;
     private JPopupMenu popupMenu;
+
+    private interface ResultMenuItemListener {
+        void handleAction(String path);
+    }
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
@@ -81,19 +85,19 @@ public class SearchDialog extends JDialog {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
                     String path = resultsListModel.getElementAt(resultsList.locationToIndex(e.getPoint()));
-                    FileUtils.openFile(path, project);
+                    FileUtils.openFile(path);
                 }
             }
         });
         popupMenu = new ResultPopupMenu(resultsList);
-        JMenuItem mi;
-        mi = new JMenuItem();
-        mi.setText("Open File");
-        mi.addActionListener(e -> {
-            String path = resultsList.getSelectedValue();
-            FileUtils.openFile(path, project);
-        });
-        popupMenu.add(mi);
+
+        ApplicationInfo instance = ApplicationInfo.getInstance();
+        popupMenu.add(createResultsListMenuItem("Open File", FileUtils::openFile));
+        String miText = String.format("Open File with %s", instance.getVersionName());
+        popupMenu.add(createResultsListMenuItem(miText, path -> FileUtils.openFileWithIDEA(path, project)));
+        popupMenu.add(createResultsListMenuItem("Open Containing Folder", FileUtils::openFolder));
+        popupMenu.add(createResultsListMenuItem("Copy File Path to Clipboard", path -> FileUtils.copyPath(path, project)));
+        popupMenu.add(createResultsListMenuItem("Copy Containing Folder Path to Clipboard", path -> FileUtils.copyFolderPath(path, project)));
         resultsList.setComponentPopupMenu(popupMenu);
 
         searchInput.addKeyListener(new KeyListener() {
@@ -131,7 +135,14 @@ public class SearchDialog extends JDialog {
             KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    protected SearchOptions createSearchOptions(String searchString){
+    private JMenuItem createResultsListMenuItem(String text, ResultMenuItemListener listener) {
+        JMenuItem mi = new JMenuItem();
+        mi.setText(text);
+        mi.addActionListener(e -> listener.handleAction(resultsList.getSelectedValue()));
+        return mi;
+    }
+
+    private SearchOptions createSearchOptions(String searchString){
         SearchOptions so = new SearchOptions();
         String[] sp = new String[searchPathModel.size()];
         Object[] r = searchPathModel.toArray();
