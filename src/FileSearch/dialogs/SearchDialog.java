@@ -38,6 +38,7 @@ public class SearchDialog extends JDialog {
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
     private ResultsListModel resultsListModel = new ResultsListModel();
     private Search currentSearch = null;
+    private JPopupMenu popupMenu;
 
     public SearchDialog(final SearchManager searchManager) {
         setContentPane(contentPane);
@@ -80,11 +81,20 @@ public class SearchDialog extends JDialog {
                 super.mouseClicked(e);
                 if (e.getClickCount() == 2) {
                     String path = resultsListModel.getElementAt(resultsList.locationToIndex(e.getPoint()));
-                    VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByIoFile(new File(path));
-                    FileEditorManager.getInstance(project).openFile(virtualFile, true);
+                    FileUtils.openFile(path, project);
                 }
             }
         });
+        popupMenu = new ResultPopupMenu(resultsList);
+        JMenuItem mi;
+        mi = new JMenuItem();
+        mi.setText("Open File");
+        mi.addActionListener(e -> {
+            String path = resultsList.getSelectedValue();
+            FileUtils.openFile(path, project);
+        });
+        popupMenu.add(mi);
+        resultsList.setComponentPopupMenu(popupMenu);
 
         searchInput.addKeyListener(new KeyListener() {
             @Override
