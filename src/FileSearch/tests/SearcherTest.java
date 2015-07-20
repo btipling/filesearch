@@ -30,7 +30,7 @@ public class SearcherTest {
         searchOptions.searchString = "foo";
         searchOptions.searchHiddenDirs = true;
         search = new Search(searchOptions);
-        searcher = new Searcher(search, new MockFileUtils(true));
+        searcher = new Searcher(search, new MockFileUtils(false));
     }
 
     @After
@@ -58,6 +58,19 @@ public class SearcherTest {
         assertEquals("Search results should start empty.", 0, search.getResults().size());
         searcher.checkFile(file);
         assertEquals("Search should have added a result", 1, search.getResults().size());
+    }
+
+    @Test
+    public void testHidden() {
+        searcher = new Searcher(search, new MockFileUtils(true));
+        assertEquals("Hidden dir should continue", FileVisitResult.CONTINUE, searcher.checkDir(file));
+        searcher.checkFile(file);
+        assertEquals("Search should have added a hidden result", 2, search.getResults().size());
+        searchOptions.searchHiddenDirs = false;
+        assertEquals("Hidden dir should not continue", FileVisitResult.SKIP_SUBTREE, searcher.checkDir(file));
+        assertEquals("Search should not have added a hidden directory", 2, search.getResults().size());
+        searcher.checkFile(file);
+        assertEquals("Search should have added a hidden file even if we skip hidden dirs", 3, search.getResults().size());
     }
 
 }
