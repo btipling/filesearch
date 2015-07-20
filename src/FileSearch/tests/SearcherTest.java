@@ -73,4 +73,96 @@ public class SearcherTest {
         assertEquals("Search should have added a hidden file even if we skip hidden dirs", 3, search.getResults().size());
     }
 
+    @Test
+    public void testRegex() {
+        searchOptions.regex = true;
+        searchOptions.searchString = "f.obar\\.txt";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/foobar.txt");
+        searcher.checkFile(file);
+        assertEquals("Regex should match.", 1, search.getResults().size());
+        file = new MockPathManager("/foo/bar/fuobar.txt");
+        searcher.checkFile(file);
+        assertEquals("Regex should match.", 2, search.getResults().size());
+        file = new MockPathManager("/foo/bar/fobar.txt");
+        searcher.checkFile(file);
+        assertEquals("Regex should not have matched.", 2, search.getResults().size());
+    }
+
+    @Test
+    public void testExactFileNameSearch() {
+        searchOptions.match = SearchOptions.MatchOption.EXACT_FILE;
+        searchOptions.searchString = "foobar.txt";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/foobar.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should match.", 1, search.getResults().size());
+        file = new MockPathManager("/foo/bar/nope_foobar.txt");
+        assertEquals("File name should not match.", 1, search.getResults().size());
+        file = new MockPathManager("/foo/bar/foobar.txtnope");
+        assertEquals("File name should still not match.", 1, search.getResults().size());
+    }
+
+    @Test
+    public void testPathSearch() {
+        searchOptions.match = SearchOptions.MatchOption.MATCH_PATH;
+        searchOptions.searchString = "foo";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/bar.txt");
+        searcher.checkFile(file);
+        assertEquals("Path should match.", 1, search.getResults().size());
+        file = new MockPathManager("/bar/bar/foo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should  match.", 2, search.getResults().size());
+        file = new MockPathManager("/nothing/here/matches.nope");
+        assertEquals("Nothing matches.", 2, search.getResults().size());
+    }
+
+    @Test
+    public void testFileNameOnly() {
+        searchOptions.match = SearchOptions.MatchOption.MATCH_FILE;
+        searchOptions.searchString = "foo";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/bar.txt");
+        searcher.checkFile(file);
+        assertEquals("Path should not match.", 0, search.getResults().size());
+        file = new MockPathManager("/bar/bar/foo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should  match.", 1, search.getResults().size());
+        file = new MockPathManager("/nothing/here/matches.nope");
+        assertEquals("Nothing matches.", 1, search.getResults().size());
+    }
+
+    @Test
+    public void testCaseSensitive() {
+        searchOptions.caseSensitive = true;
+        searchOptions.searchString = "fOo";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/Foo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should not match.", 0, search.getResults().size());
+        file = new MockPathManager("/bar/bar/fOo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should  match.", 1, search.getResults().size());
+        file = new MockPathManager("/nothing/here/matches.nope");
+        assertEquals("Nothing matches.", 1, search.getResults().size());
+        searchOptions.caseSensitive = false;
+        searchOptions.searchString = "fOo";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/Foo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should now match.", 1, search.getResults().size());
+        file = new MockPathManager("/bar/bar/fOo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should  match.", 2, search.getResults().size());
+        file = new MockPathManager("/nothing/here/matches.nope");
+        assertEquals("Nothing matches.", 2, search.getResults().size());
+    }
+
 }

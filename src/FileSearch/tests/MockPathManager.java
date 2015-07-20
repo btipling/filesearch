@@ -15,4 +15,10 @@ public class MockPathManager implements PathManager {
         String[] parts = path.split("/");
         return parts[parts.length - 1];
     }
+
+    @Override
+    public String getFullPath() {
+        return this.path;
+    }
+
 }

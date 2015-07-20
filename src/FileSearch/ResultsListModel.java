@@ -42,7 +42,7 @@ public class ResultsListModel implements ListModel<String> {
     @Override
     public String getElementAt(int index) {
         ResultImpl res = this.results.get(index);
-        return res.toString();
+        return res.getValue();
     }
 
     @Override

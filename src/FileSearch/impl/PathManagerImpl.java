@@ -23,7 +23,7 @@ public class PathManagerImpl implements PathManager {
     }
 
     @Override
-    public String toString() {
+    public String getFullPath() {
         return this.path.toString();
     }
 }

@@ -1,5 +1,5 @@
 package FileSearch.tools;
 
 public interface Result {
-    String toString();
+    String getValue();
 }

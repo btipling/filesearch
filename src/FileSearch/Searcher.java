@@ -31,10 +31,10 @@ public class Searcher implements FileVisitor<Path> {
 
         @Override
         public void setSearcher(String searchString, boolean caseSensitive) {
+            this.searchString = searchString;
             if (!caseSensitive) {
                 this.searchString = searchString.toLowerCase();
             }
-            this.searchString = searchString;
         }
 
         @Override
@@ -80,7 +80,7 @@ public class Searcher implements FileVisitor<Path> {
             return FileVisitResult.TERMINATE;
         }
         String filename = dirOrFile.getFileName();
-        String path = dirOrFile.toString();
+        String path = dirOrFile.getFullPath();
         String searchString = search.searchOptions.searchString;
         if (!search.searchOptions.caseSensitive) {
             filename = filename.toLowerCase();
@@ -127,7 +127,7 @@ public class Searcher implements FileVisitor<Path> {
         }
         // Otherwise we would never search anything, we need to search the first directory.
         top = false;
-        search.currentStatus(String.format("Searching %s", dir.toString()));
+        search.currentStatus(String.format("Searching %s", dir.getFullPath()));
         return FileVisitResult.CONTINUE;
     }
 

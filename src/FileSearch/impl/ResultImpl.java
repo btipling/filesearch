@@ -11,7 +11,7 @@ public class ResultImpl implements Result {
     }
 
     @Override
-    public String toString() {
-        return this.path.toString();
+    public String getValue() {
+        return this.path.getFullPath();
     }
 }

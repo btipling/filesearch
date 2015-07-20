@@ -133,7 +133,6 @@ public class SearchDialog extends JDialog {
             String projectPath = project.getBasePath();
             VirtualFile virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(new File(projectPath));
             VirtualFile[] vFiles = FileChooser.chooseFiles(descriptor, null, virtualFile);
-            FSLog.log.info(String.format("Got stuff: %s", vFiles.toString()));
             for (VirtualFile file : vFiles) {
                 searchPathModel.addElement(file.getPath());
             }
@@ -193,7 +192,7 @@ public class SearchDialog extends JDialog {
 
             @Override
             public void onReceivedResult(Search search, ResultImpl result) {
-                setSearchStatus(String.format("Found %s.", result.toString()));
+                setSearchStatus(String.format("Found %s.", result.getValue()));
                 ApplicationManager.getApplication().invokeLater(() -> {
                     if (!clearBtn.isEnabled()) {
                         clearBtn.setEnabled(true);
