@@ -3,6 +3,7 @@ package FileSearch.dialogs;
 import FileSearch.*;
 import FileSearch.impl.ResultImpl;
 import FileSearch.tools.FileUtils;
+import FileSearch.tools.Result;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
@@ -217,7 +218,7 @@ public class SearchDialog extends JDialog {
             @Override
             public void onResultsUpdate(Search search) {
                 ApplicationManager.getApplication().invokeLater(() -> {
-                    List<ResultImpl> r = search.getResults();
+                    List<Result> r = search.getResults();
                     resultsListModel.update(search.getResults());
                     if (r.size() == 0 && clearBtn.isEnabled()) {
                         clearBtn.setEnabled(false);

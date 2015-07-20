@@ -1,6 +1,7 @@
 package FileSearch;
 
 import FileSearch.impl.ResultImpl;
+import FileSearch.tools.Result;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -8,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Search {
     private AtomicBoolean stopped = new AtomicBoolean(false);
     protected SearchOptions searchOptions;
-    private ArrayList<ResultImpl> results = new ArrayList<ResultImpl>();
+    private ArrayList<Result> results = new ArrayList<>();
     private ArrayList<SearchResultListener> listeners = new ArrayList<>();
 
     public Search(SearchOptions searchOptions) {
@@ -34,7 +35,7 @@ public class Search {
         }
     }
 
-    public ArrayList<ResultImpl> getResults() {
+    public ArrayList<Result> getResults() {
         return results;
     }
 
