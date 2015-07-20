@@ -3,7 +3,7 @@ package FileSearch;
 import java.io.Serializable;
 
 public class SearchOptions implements Serializable {
-    static public enum MatchOption {
+    public enum MatchOption {
         EXACT_FILE, MATCH_FILE, MATCH_PATH
     }
     public String searchString;

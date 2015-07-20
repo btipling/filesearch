@@ -1,5 +1,7 @@
 package FileSearch;
 
+import FileSearch.impl.ResultImpl;
+
 import javax.swing.*;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -8,7 +10,7 @@ import java.util.List;
 
 public class ResultsListModel implements ListModel<String> {
 
-    List<Result> results = new ArrayList<>();
+    List<ResultImpl> results = new ArrayList<>();
     List<ListDataListener> listeners = new ArrayList<>();
 
     private void broadcast(ListDataEvent e) {
@@ -17,8 +19,8 @@ public class ResultsListModel implements ListModel<String> {
         }
     }
 
-    public void update(List<Result> newResults) {
-        List<Result> oldResults = this.results;
+    public void update(List<ResultImpl> newResults) {
+        List<ResultImpl> oldResults = this.results;
         int maxSize = oldResults.size();
         if (newResults.size() > maxSize) {
             maxSize = newResults.size();
@@ -39,7 +41,7 @@ public class ResultsListModel implements ListModel<String> {
 
     @Override
     public String getElementAt(int index) {
-        Result res = this.results.get(index);
+        ResultImpl res = this.results.get(index);
         return res.toString();
     }
 

@@ -1,9 +1,10 @@
 package FileSearch;
 
+import FileSearch.tools.FileUtils;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,6 +14,11 @@ public class SearchManager {
 
     HashMap<Search, Future> tasks = new HashMap<>();
     ExecutorService executor = Executors.newFixedThreadPool(1);
+    FileUtils fileUtils;
+
+    public SearchManager(FileUtils fileUtils) {
+        this.fileUtils = fileUtils;
+    }
 
     public void execute(Search search) {
         tasks.put(search, executor.submit(() -> {
@@ -33,7 +39,7 @@ public class SearchManager {
 
     public void searchPath(String searchPath, Search search) {
         try {
-            Files.walkFileTree(FileSystems.getDefault().getPath(searchPath), new Searcher(search));
+            Files.walkFileTree(FileSystems.getDefault().getPath(searchPath), new Searcher(search, fileUtils));
         } catch (IOException e) {
             e.printStackTrace();
         }

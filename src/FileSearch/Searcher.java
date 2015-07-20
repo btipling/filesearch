@@ -1,8 +1,10 @@
 package FileSearch;
 
-import org.apache.xerces.impl.xpath.regex.RegularExpression;
+import FileSearch.impl.PathManagerImpl;
+import FileSearch.impl.ResultImpl;
+import FileSearch.tools.FileUtils;
+import FileSearch.tools.PathManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -16,7 +18,7 @@ public class Searcher implements FileVisitor<Path> {
     private Search search;
     private SearchStrategy searchStrategy;
     private boolean top = true;
-
+    FileUtils fileUtils;
 
     private interface SearchStrategy {
         void setSearcher(String searchString, boolean caseSensitive);
@@ -62,8 +64,8 @@ public class Searcher implements FileVisitor<Path> {
         }
     }
 
-
-    public Searcher(Search search) {
+    public Searcher(Search search, FileUtils fileUtils) {
+        this.fileUtils = fileUtils;
         if (search.searchOptions.regex && search.searchOptions.match != SearchOptions.MatchOption.EXACT_FILE) {
             searchStrategy = new SearchStrategyRegExp();
         } else {
@@ -73,16 +75,11 @@ public class Searcher implements FileVisitor<Path> {
         this.search = search;
     }
 
-    protected FileVisitResult check(Path dirOrFile, boolean ispreVisitDir) {
+    protected FileVisitResult check(PathManager dirOrFile, boolean isPreVisitDir) {
         if (Thread.currentThread().isInterrupted()) {
             return FileVisitResult.TERMINATE;
         }
-        Path filenamePath = dirOrFile.getFileName();
-        if (filenamePath == null) {
-            //Happens when we are searching the root directory, "/"!
-            return null;
-        }
-        String filename = filenamePath.toString();
+        String filename = dirOrFile.getFileName();
         String path = dirOrFile.toString();
         String searchString = search.searchOptions.searchString;
         if (!search.searchOptions.caseSensitive) {
@@ -90,26 +87,25 @@ public class Searcher implements FileVisitor<Path> {
             path = path.toLowerCase();
             searchString = searchString.toLowerCase();
         }
-        if (ispreVisitDir && !search.searchOptions.searchHiddenDirs) {
-            File f = new File(path);
-            if (f.isHidden()) {
+        if (isPreVisitDir && !search.searchOptions.searchHiddenDirs) {
+            if (fileUtils.isHidden(path)) {
                 return FileVisitResult.SKIP_SUBTREE;
             }
         }
         switch (search.searchOptions.match) {
             case MATCH_PATH:
                 if (searchStrategy.match(path)) {
-                    search.addResult(new Result(dirOrFile));
+                    search.addResult(new ResultImpl(dirOrFile));
                 }
                 break;
             case EXACT_FILE:
                 if (filename.equals(searchString)) {
-                    search.addResult(new Result(dirOrFile));
+                    search.addResult(new ResultImpl(dirOrFile));
                 }
                 break;
             default:
                 if (searchStrategy.match(filename)) {
-                    search.addResult(new Result(dirOrFile));
+                    search.addResult(new ResultImpl(dirOrFile));
                 }
                 break;
         }
@@ -118,6 +114,10 @@ public class Searcher implements FileVisitor<Path> {
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        return checkDir(new PathManagerImpl(dir));
+    }
+
+    public FileVisitResult checkDir(PathManager dir) {
         FileVisitResult r = this.check(dir, true);
         if (r != null) {
             return r;
@@ -133,6 +133,10 @@ public class Searcher implements FileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        return checkFile(new PathManagerImpl(file));
+    }
+
+    public FileVisitResult checkFile(PathManager file) {
         FileVisitResult r = this.check(file, false);
         if (r != null) {
             return r;
@@ -155,4 +159,5 @@ public class Searcher implements FileVisitor<Path> {
         }
         return FileVisitResult.CONTINUE;
     }
+
 }
