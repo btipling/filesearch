@@ -51,9 +51,9 @@ public class Searcher implements FileVisitor<Path> {
         public void setSearcher(String searchString, boolean caseSensitive) {
 
             if (caseSensitive) {
-                pattern = Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
-            } else {
                 pattern = Pattern.compile(searchString);
+            } else {
+                pattern = Pattern.compile(searchString, Pattern.CASE_INSENSITIVE);
             }
         }
 

@@ -165,4 +165,33 @@ public class SearcherTest {
         assertEquals("Nothing matches.", 2, search.getResults().size());
     }
 
+    @Test
+    public void testCaseSensitiveRegex() {
+        searchOptions.caseSensitive = true;
+        searchOptions.regex = true;
+        searchOptions.searchString = "f.O\\.txt";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/Foo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should not match.", 0, search.getResults().size());
+        file = new MockPathManager("/bar/bar/foO.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should match.", 1, search.getResults().size());
+        file = new MockPathManager("/nothing/here/matches.nope");
+        assertEquals("Nothing matches.", 1, search.getResults().size());
+        searchOptions.caseSensitive = false;
+        searchOptions.searchString = "f.O\\.txt";
+        search = new Search(searchOptions);
+        searcher = new Searcher(search, new MockFileUtils(false));
+        file = new MockPathManager("/foo/bar/Foo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should now match.", 1, search.getResults().size());
+        file = new MockPathManager("/bar/bar/fOo.txt");
+        searcher.checkFile(file);
+        assertEquals("File name should still match.", 2, search.getResults().size());
+        file = new MockPathManager("/nothing/here/matches.nope");
+        assertEquals("Nothing matches.", 2, search.getResults().size());
+    }
+
 }
