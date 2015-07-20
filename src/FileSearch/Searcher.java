@@ -95,17 +95,17 @@ public class Searcher implements FileVisitor<Path> {
         switch (search.searchOptions.match) {
             case MATCH_PATH:
                 if (searchStrategy.match(path)) {
-                    search.addResult(new ResultImpl(dirOrFile));
+                    search.addResult(fileUtils.createResult(dirOrFile));
                 }
                 break;
             case EXACT_FILE:
                 if (filename.equals(searchString)) {
-                    search.addResult(new ResultImpl(dirOrFile));
+                    search.addResult(fileUtils.createResult((dirOrFile)));
                 }
                 break;
             default:
                 if (searchStrategy.match(filename)) {
-                    search.addResult(new ResultImpl(dirOrFile));
+                    search.addResult(fileUtils.createResult(dirOrFile));
                 }
                 break;
         }

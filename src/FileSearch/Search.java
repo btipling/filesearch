@@ -16,7 +16,7 @@ public class Search {
         this.searchOptions = searchOptions;
     }
 
-    public void addResult(ResultImpl result) {
+    public void addResult(Result result) {
         if (stopped.get()) {
             return;
         }

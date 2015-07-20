@@ -1,10 +1,10 @@
 package FileSearch;
 
-import FileSearch.impl.ResultImpl;
+import FileSearch.tools.Result;
 
 public interface SearchResultListener {
     void onFinishedResults(Search search);
-    void onReceivedResult(Search search, ResultImpl result);
+    void onReceivedResult(Search search, Result result);
     void onStatusUpdate(String status);
     void onResultsUpdate(Search search);
 }

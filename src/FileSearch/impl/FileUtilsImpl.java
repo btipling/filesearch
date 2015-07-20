@@ -1,6 +1,8 @@
 package FileSearch.impl;
 
 import FileSearch.tools.FileUtils;
+import FileSearch.tools.PathManager;
+import FileSearch.tools.Result;
 import com.intellij.ide.actions.ShowFilePathAction;
 import com.intellij.notification.*;
 import com.intellij.openapi.application.ApplicationManager;
@@ -69,6 +71,11 @@ public class FileUtilsImpl implements FileUtils {
     public boolean isHidden(String path) {
         File f = new File(path);
         return f.isHidden();
+    }
+
+    @Override
+    public Result createResult(PathManager path) {
+        return new ResultImpl(path);
     }
 
     public void notify(String message, NotificationType notificationType) {

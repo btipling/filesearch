@@ -1,6 +1,8 @@
 package FileSearch.tests;
 
 import FileSearch.tools.FileUtils;
+import FileSearch.tools.PathManager;
+import FileSearch.tools.Result;
 
 public class MockFileUtils implements FileUtils {
 
@@ -38,5 +40,10 @@ public class MockFileUtils implements FileUtils {
     @Override
     public boolean isHidden(String path) {
         return this.hidden;
+    }
+
+    @Override
+    public Result createResult(PathManager path) {
+        return new MockResult(path.getFullPath());
     }
 }

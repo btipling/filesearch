@@ -192,7 +192,7 @@ public class SearchDialog extends JDialog {
             }
 
             @Override
-            public void onReceivedResult(Search search, ResultImpl result) {
+            public void onReceivedResult(Search search, Result result) {
                 setSearchStatus(String.format("Found %s.", result.getValue()));
                 ApplicationManager.getApplication().invokeLater(() -> {
                     if (!clearBtn.isEnabled()) {

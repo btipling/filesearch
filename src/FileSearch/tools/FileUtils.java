@@ -7,4 +7,5 @@ public interface FileUtils {
     void copyPath(String path);
     void openFileWithIDEA(String path);
     boolean isHidden(String path);
+    Result createResult(PathManager path);
 }
