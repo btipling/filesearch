@@ -1,6 +1,5 @@
 package FileSearch;
 
-import FileSearch.impl.ResultImpl;
 import FileSearch.tools.Result;
 
 import java.util.ArrayList;

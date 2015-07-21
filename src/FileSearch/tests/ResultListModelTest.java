@@ -1,7 +1,6 @@
 package FileSearch.tests;
 
 import FileSearch.ResultsListModel;
-import FileSearch.impl.ResultImpl;
 import FileSearch.tools.Result;
 import org.junit.After;
 import org.junit.Before;
@@ -88,4 +87,52 @@ public class ResultListModelTest {
         assertEquals("Should not have any elements.", 1, resultsListModel.getSize());
         assertEquals("Should have returned the correct path", path, resultsListModel.getElementAt(0));
     }
+
+    @Test
+    public void testAddListeners() {
+        dataListener = createDataListener();
+        resultsListModel.addListDataListener(dataListener);
+        String path = "/foo/bar/so/unique/foobar.txt";
+        results.add(new MockResult(path));
+        resultsListModel.addedResults(1);
+        assertListenerCounts("Should have fired add twice with two listeners.", 1, 2, 0);
+    }
+
+    @Test
+    public void testRemListeners() {
+        resultsListModel.removeListDataListener(dataListener);
+        String path = "/foo/bar/so/unique/foobar.txt";
+        results.add(new MockResult(path));
+        resultsListModel.addedResults(1);
+        assertListenerCounts("Should not have fired add event with no listeners.", 1, 0, 0);
+    }
+
+    @Test
+    public void testSmallUpdate() {
+        String path = "/foo/bar/so/unique/foobar.txt";
+        results.add(new MockResult(path));
+        resultsListModel.addedResults(1);
+        assertEquals("Should have added result", resultsListModel.getSize(), 1);
+        results = new ArrayList<>();
+        resultsListModel.update(results);
+        assertListenerCounts("Should have fired add two change events.", 2, 1, 0);
+        assertEquals("Should have no results", resultsListModel.getSize(), 0);
+    }
+
+    @Test
+    public void testLargeUpdate() {
+        String path = "/foo/bar/so/unique/foobar.txt";
+        results.add(new MockResult(path));
+        resultsListModel.addedResults(1);
+        assertEquals("Should have added result", resultsListModel.getSize(), 1);
+        results = new ArrayList<>();
+        results.add(new MockResult(path));
+        path = "/foo/bar/so/unique/foobar2.txt";
+        results.add(new MockResult(path));
+        resultsListModel.update(results);
+        assertListenerCounts("Should have fired add two change events.", 2, 1, 0);
+        assertEquals("Should have no results", resultsListModel.getSize(), 2);
+    }
+
+
 }
