@@ -42,6 +42,7 @@ public class Search {
         if (stopped.get()) {
             return;
         }
+        stopped.set(true);
         for (SearchResultListener l : listeners) {
             l.onFinishedResults(this);
         }
@@ -54,6 +55,10 @@ public class Search {
     public void cancel() {
         stopped.set(true);
         listeners.clear();
+    }
+
+    public boolean isStopped() {
+        return stopped.get();
     }
 
     public void clear() {
