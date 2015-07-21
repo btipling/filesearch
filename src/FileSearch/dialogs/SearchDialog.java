@@ -4,6 +4,7 @@ import FileSearch.*;
 import FileSearch.impl.ResultImpl;
 import FileSearch.tools.FileUtils;
 import FileSearch.tools.Result;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileChooser.FileChooser;
@@ -41,6 +42,7 @@ public class SearchDialog extends JDialog {
     private JPanel resultsPanel;
     private JPanel searchPanel;
     private JPanel searchPathPanel;
+    private JButton helpButton;
     private SearchManager searchManager;
     private DefaultListModel<String> searchPathModel = new DefaultListModel<>();
     private ResultsListModel resultsListModel = new ResultsListModel();
@@ -108,6 +110,8 @@ public class SearchDialog extends JDialog {
         popupMenu.add(createResultsListMenuItem("Open Containing Folder", fileUtils::openFolder));
         popupMenu.add(createResultsListMenuItem("Copy File Path to Clipboard", fileUtils::copyPath));
         popupMenu.add(createResultsListMenuItem("Copy Containing Folder Path to Clipboard", fileUtils::copyFolderPath));
+        helpButton.setBorder(null);
+        helpButton.addActionListener(e -> BrowserUtil.browse("https://github.com/btipling/filesearch/blob/master/README.md"));
         resultsList.setComponentPopupMenu(popupMenu);
 
         searchInput.addKeyListener(new KeyListener() {
