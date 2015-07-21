@@ -35,8 +35,8 @@
 
   <actions>
     <!-- Add your actions here -->
-      <action id="open.filesearch.apphacker.com" class="FileSearch.actions.OpenFileSearch" text="Search for Files"
-              description="Search for Files by name or path">
+      <action id="open.filesearch.apphacker.com" class="FileSearch.actions.OpenFileSearch" text="Find Files by Name"
+              description="Find files by name or path">
           <add-to-group group-id="ToolsMenu" anchor="last"/>
       </action>
   </actions>

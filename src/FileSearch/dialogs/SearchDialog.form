@@ -101,7 +101,9 @@
                         <preferred-size width="150" height="-1"/>
                       </grid>
                     </constraints>
-                    <properties/>
+                    <properties>
+                      <toolTipText value="Enter some text here that is in the name of the file that you are looking for."/>
+                    </properties>
                   </component>
                   <component id="acf31" class="javax.swing.JLabel">
                     <constraints>
@@ -109,6 +111,7 @@
                     </constraints>
                     <properties>
                       <text value="Text to find:"/>
+                      <toolTipText value="Enter some text here that is in the name of the file that you are looking for."/>
                     </properties>
                   </component>
                   <hspacer id="cd052">
@@ -132,6 +135,7 @@
                     </constraints>
                     <properties>
                       <text value="Case sensitive"/>
+                      <toolTipText value="Select to make your search case sensitive. If not selected case will be ignored."/>
                     </properties>
                   </component>
                   <component id="c157d" class="javax.swing.JCheckBox" binding="regexCB">
@@ -140,6 +144,7 @@
                     </constraints>
                     <properties>
                       <text value="Regular expression"/>
+                      <toolTipText value="Select to use regular expression syntax to search for files."/>
                     </properties>
                   </component>
                   <component id="8fd36" class="javax.swing.JCheckBox" binding="recursiveCB">
@@ -149,6 +154,7 @@
                     <properties>
                       <selected value="true"/>
                       <text value="Search subdirectories"/>
+                      <toolTipText value="Select to include all the subdirectories of your selected search paths. This will perform a recursive search of all subdirectories and may take some time to complete."/>
                     </properties>
                   </component>
                   <hspacer id="1dd05">
@@ -163,6 +169,7 @@
                     <properties>
                       <selected value="true"/>
                       <text value="Look in hidden directories"/>
+                      <toolTipText value="Select to search the contents of hidden directories. "/>
                     </properties>
                   </component>
                 </children>
@@ -182,6 +189,7 @@
                     <properties>
                       <selected value="true"/>
                       <text value="File name"/>
+                      <toolTipText value="Select to match your search text against file names only. Your text will not be matched against the path of the file, just the file name."/>
                     </properties>
                   </component>
                   <component id="27ccb" class="javax.swing.JRadioButton" binding="fullPathRadioButton" default-binding="true">
@@ -190,6 +198,7 @@
                     </constraints>
                     <properties>
                       <text value="Full path"/>
+                      <toolTipText value="Select to include matching the whole path of the file, not just its file name. This means the absolute file path including any parent directories will also be matched."/>
                     </properties>
                   </component>
                   <component id="23837" class="javax.swing.JLabel">
@@ -211,6 +220,7 @@
                     </constraints>
                     <properties>
                       <text value="Exact file name"/>
+                      <toolTipText value="Select if you know the exact file name you are searching for. Your search text must match the file name exactly and does not include the path."/>
                     </properties>
                   </component>
                 </children>
@@ -287,6 +297,7 @@
                 </constraints>
                 <properties>
                   <text value="Select Directories To Search"/>
+                  <toolTipText value="Select the place on your computer where to begin searching for your file. You can search multiple places at once."/>
                 </properties>
               </component>
               <component id="a4f41" class="javax.swing.JLabel">
