@@ -1,4 +1,4 @@
-package FileSearch.tests;
+package FileSearch.test;
 
 import FileSearch.tools.FileUtils;
 import FileSearch.tools.PathManager;
