@@ -1,31 +1,47 @@
-## TODO:
+##File Search
 
-implement tooltips for UI for help
-maybe add a help button that goes to GitHub help once this is moved to GitHub
+File Search is an IntelliJ IDEA plugin that lets you search your computer for files by name from within your IDE.
 
-tests
+###System Requirements
 
-## TO-DONE:
+File Search works with all recent versions of each of the IDEs Jetbrains makes
+that are based on IntelliJ IDEA with one major requirement:
+
+**File Search requires that IntelliJ IDEA runs on JRE8**
+
+Most Mac users are probably do not meet this requirement unless they installed IntelliJ IDEA with the version
+that bundles it's own JRE.
+
+You can [download a bundled version of IntelliJ IDEA here](https://confluence.jetbrains.com/display/IntelliJIDEA/Previous+IntelliJ+IDEA+Releases).
+
+###Installation
+
+Simply open your Plugin Browser via Settings and search for "File Search". You can also 
+[download File Search from jetbrains.com](https://plugins.jetbrains.com/plugin/7867?pr=) or build it via the source
+code available here.
+
+###Usage
+
+Go to Tools -> Find Files by Name or Cmd/Alt+Shift+A and type "Find Files by Name"
+
+You should see a dialog appear:
+
+![A typical File Search Dialog](http://i.imgur.com/sM2e10e.png)
 
 
-✗ implement search history, perhaps via an HTML link that collapses or expands a previous search results table that
-has search string, and columns for search options and an option to clear or remove individual items
-✗ implement max num search result history
-✓ -> context menu
-✓     Open up file
-✓     Open up parent folder.
-✓     Copy and paste whole path.
-✓     Copy and paste parent folder path.
-✓ option for not checking hidden directories
-✓ Open up files
-✓ Respect options.
-✓ implement all the options
-✓ update plugin.xml
-✓ stop locking ui
-✓ cancel search
-✓ fix results list model so it only adds on add, instead of feeding it the entire result list
-✓ clear results/state
-✓ add clear (results) button
-✓ disable search button until there's text and a directory to search exists
+###Features:
+
+You can search by matching text to a file name or whole path or for the exact file name.
+
+Search by regular expression.
+
+Search multiple directories.
+
+Open files via your operating system or in IntelliJ or copy the path to your clipboard.
+
+You can also copy the containing directory path in your clipboard.
 
 
+###Bugs and Requests
+
+Please create an issue on this repository to report bugs or if you have a request.

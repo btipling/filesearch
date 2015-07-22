@@ -5,7 +5,8 @@
   <vendor email="apphacker@gmail.com" url="https://www.apphacker.com">Apphacker</vendor>
 
   <description><![CDATA[
-     Search for files by name anywhere on your computer.
+     Search for files by name anywhere on your computer. Requires that IntelliJ IDEA runs on JRE 8. Mac developers
+     need to use the version of IntelliJ IDEA that bundles the JRE.
     ]]></description>
 
   <change-notes><![CDATA[
