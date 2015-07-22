@@ -1,5 +1,7 @@
 ##File Search
 
+[![Build Status](https://travis-ci.org/btipling/filesearch.svg)](https://travis-ci.org/btipling/filesearch)
+
 File Search is an IntelliJ IDEA plugin that lets you search your computer for files by name from within your IDE.
 
 ###System Requirements
